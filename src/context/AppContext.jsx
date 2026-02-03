@@ -18,6 +18,8 @@ const currency=import.meta.env.VITE_CURRENCY;
   const [products, setProducts] = useState([]);
 
   const [cartItems,setCartItems]=useState({});
+  const [searchQuery,setSearchQuery]=useState({});
+
 
   const fetchProducts = async () => {
     setProducts(dummyProducts);
@@ -81,7 +83,9 @@ const currency=import.meta.env.VITE_CURRENCY;
     currency,
     addToCart,
     updateCartItem,
-    removeFromCart,cartItems
+    removeFromCart,cartItems,
+    searchQuery,
+    setSearchQuery
   };
 
   return (

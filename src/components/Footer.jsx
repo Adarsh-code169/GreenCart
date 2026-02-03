@@ -26,7 +26,7 @@ const Footer = () => {
                 </div>
             </div>
             <p className="py-4 text-center text-sm md:text-base text-gray-500/80">
-                Copyright 2025 {new Date().getFullYear()} © GreatStack.dev All Right Reserved.
+                Copyright 2026 {new Date().getFullYear()} © Adarsh.dev All Right Reserved.
             </p>
         </div>
     );
