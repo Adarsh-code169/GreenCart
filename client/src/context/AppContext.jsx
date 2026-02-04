@@ -60,6 +60,29 @@ const currency=import.meta.env.VITE_CURRENCY;
       toast.success("Item Removed");
     }
   };
+
+  const getCartCount=()=>{
+    let totalCount=0;
+    for (const item in cartItems){
+      totalCount+=cartItems[item];
+    }
+    return totalCount;
+
+  }
+
+  const getCartAmount=()=>{
+    let totalAmount=0
+    for (const items in cartItems){
+      let itemInfo=products.find((product)=>product._id===items);
+      if (cartItems[items]>0){
+        totalAmount+=itemInfo.offerPrice * cartItems[items];
+
+      }
+
+  }
+  return Math.floor(totalAmount*100)/100;
+}
+
   
 
 
@@ -85,7 +108,8 @@ const currency=import.meta.env.VITE_CURRENCY;
     updateCartItem,
     removeFromCart,cartItems,
     searchQuery,
-    setSearchQuery
+    setSearchQuery,
+    getCartCount,getCartAmount
   };
 
   return (
