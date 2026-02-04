@@ -8,6 +8,7 @@ import Footer from './components/Footer.jsx'
 import { useAppContext } from './context/AppContext.jsx'
 import AllProducts from './pages/AllProducts.jsx'
 import ProductCategory from './pages/ProductCategory.jsx'
+import ProductDetail from './pages/ProductDetails.jsx'
 
 
 const App = () => {
@@ -27,6 +28,9 @@ const App = () => {
           <Route path='/' element={<Home />} />
           <Route path='/products' element={<AllProducts />} />
           <Route path='/product-category/:categoryName' element={<ProductCategory />} />
+          <Route path='/products/:category/:id' element={<ProductDetail />} />
+
+
 
         </Routes>
 
