@@ -16,24 +16,20 @@ export const register = async (req, res) => {
             return res.json({ success: false, message: "User Already Exists" });
         }
 
-        // ✅ HASH PASSWORD
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // ✅ CREATE USER
         const user = await User.create({
             name,
             email,
             password: hashedPassword
         });
 
-        // ✅ CREATE TOKEN
         const token = jwt.sign(
             { id: user._id },
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         );
 
-        // ✅ SET COOKIE
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
@@ -55,13 +51,13 @@ export const register = async (req, res) => {
     }
 }
 
-//login user: /api/user/login
+
 
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // ✅ Validation
+
         if (!email || !password) {
             return res.json({
                 success: false,
@@ -69,7 +65,7 @@ export const login = async (req, res) => {
             });
         }
 
-        // ✅ Find user
+
         const user = await User.findOne({ email });
 
         if (!user) {
@@ -79,7 +75,7 @@ export const login = async (req, res) => {
             });
         }
 
-        // ✅ Compare password
+
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
@@ -89,14 +85,14 @@ export const login = async (req, res) => {
             });
         }
 
-        // ✅ Generate token
+
         const token = jwt.sign(
             { id: user._id },
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         );
 
-        // ✅ Set cookie
+
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
@@ -120,13 +116,38 @@ export const login = async (req, res) => {
 
 
 
-export const isAuth=async(req,res)=>{
+export const isAuth = async (req, res) => {
+    try {
+        const user = await User
+            .findById(req.userId)
+            .select("-password");
+
+        return res.json({
+            success: true,
+            user
+        });
+    } catch (error) {
+        console.log(error.message);
+        return res.json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+
+
+
+export const logout=async(req,res)=>{
     try{
-        const {userId} = req.body;
-        const user=await User.findById(userId).select("-password");
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        });
         return res.json({
             success:true,
-            user
+            message:"Logged Out Successfully"
         });
 
     }catch(error){
