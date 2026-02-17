@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-export const sellerLogin = async(re,res)=>{
+export const sellerLogin = async(req,res)=>{
     try{
         const {email,password}=req.body;
 
