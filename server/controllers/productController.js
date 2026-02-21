@@ -19,7 +19,7 @@ export const addProduct = async (req, res) => {
         );
 
         await Product.create({ ...productData, image: imagesUrl });
-
+        console.log("Product Added Successfully");
         res.json({ success: true, message: "Product Added Successfully" });
 
     } catch (error) {
