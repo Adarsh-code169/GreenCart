@@ -36,3 +36,5 @@ const authSeller = async (req, res, next) => {
 };
 
 export default authSeller;
+
+
