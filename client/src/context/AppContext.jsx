@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { dummyProducts } from "../assets/assets";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 
@@ -18,6 +17,7 @@ export const AppContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isSeller, setIsSeller] = useState(false);
   const [showUserLogin, setShowUserLogin] = useState(false);
+  const [showSellerLogin, setShowSellerLogin] = useState(false);
   const [products, setProducts] = useState([]);
 
   const [cartItems, setCartItems] = useState({});
@@ -33,7 +33,7 @@ export const AppContextProvider = ({ children }) => {
         setIsSeller(false);
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Failed to fetch seller data: ", error);
       setIsSeller(false);
     }
   };
@@ -43,10 +43,10 @@ export const AppContextProvider = ({ children }) => {
       const { data } = await axios.get("api/user/is-auth");
       if (data.success) {
         setUser(data.user);
-        setCartItems(data.user.cartItems);
+        setCartItems(data.user?.cartItems);
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Failed to fetch user data: ", error);
       setUser(null);
     }
   };
@@ -118,6 +118,7 @@ export const AppContextProvider = ({ children }) => {
       }
     }
 
+    console.log("Total Cart Amount: ", totalAmount);
     return Math.floor(totalAmount * 100) / 100;
   };
 
@@ -132,18 +133,24 @@ export const AppContextProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    const updateCart = async () => {
-      try {
-        const { data } = await axios.post("/api/cart/update", { cartItems });
-        if (!data.success) {
-          toast.error(data.message);
-        }
-      } catch (error) {
-        toast.error(error.message);
-      }
-    };
     if (user) {
-      updateCart();
+      (async () => {
+        try {
+          const { data } = await axios.post("/api/cart/update", {
+            userId: user._id,
+            cartItems,
+          });
+          console.log("Cart update response: ", data);
+
+          if (!data.success) {
+            toast.error(data.message);
+          }
+        } catch (error) {
+          toast.error(error.message);
+        }
+      })();
+    } else {
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
     }
   }, [cartItems, user]);
 
@@ -155,6 +162,8 @@ export const AppContextProvider = ({ children }) => {
     setIsSeller,
     showUserLogin,
     setShowUserLogin,
+    showSellerLogin,
+    setShowSellerLogin,
     products,
     currency,
     addToCart,

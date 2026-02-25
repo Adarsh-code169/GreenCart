@@ -4,7 +4,7 @@ import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 
 const SellerLayout = () => {
-  const { axios, navigate } = useAppContext();
+  const { axios, navigate, setIsSeller } = useAppContext();
   const sidebarLinks = [
     { name: "Add Product", path: "/seller", icon: assets.add_icon },
     {
@@ -19,6 +19,7 @@ const SellerLayout = () => {
     try {
       const { data } = await axios.get("/api/seller/logout");
       if (data.success) {
+        setIsSeller(false);
         toast.success(data.message);
         navigate("/");
       } else {
@@ -57,11 +58,10 @@ const SellerLayout = () => {
               key={item.name}
               end={item.path === "/seller"}
               className={({ isActive }) => `flex items-center py-3 px-4 gap-3 
-                            ${
-                              isActive
-                                ? "border-r-4 md:border-r-[6px] bg-primary/10 border-primary text-primary"
-                                : "hover:bg-gray-100/90 border-white"
-                            }`}
+                            ${isActive
+                  ? "border-r-4 md:border-r-[6px] bg-primary/10 border-primary text-primary"
+                  : "hover:bg-gray-100/90 border-white"
+                }`}
             >
               <img src={item.icon} alt="" className="w-7 h-7" />
               <p className="md:block hidden text-center">{item.name}</p>

@@ -10,31 +10,44 @@ const AddProduct = () => {
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState("");
   const [offerPrice, setOfferPrice] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const { axios } = useAppContext();
+  const { axios, fetchProducts } = useAppContext();
 
   const onSubmitHandler = async (event) => {
     try {
       event.preventDefault();
+      if (loading) return;
+      setLoading(true);
+
+      const formData = new FormData();
 
       const productData = {
         name,
-        description: description.split("\n"),
+        description: description.split("\n").filter(Boolean),
         category,
-        price,
-        offerPrice,
+        price: Number(price),
+        offerPrice: Number(offerPrice)
       };
 
-      const formData = new FormData();
       formData.append("productData", JSON.stringify(productData));
-      for (let i = 0; i < files.length; i++) {
-        formData.append("images", files[i]);
-      }
+
+      // ✅ Append images
+      files.forEach((file) => {
+        if (file) {
+          formData.append("images", file);
+        }
+      });
 
       const { data } = await axios.post("/api/product/add", formData);
 
       if (data.success) {
         toast.success(data.message);
+
+        // Refresh product list dynamically
+        fetchProducts();
+
+        // reset fields
         setName("");
         setDescription("");
         setCategory("");
@@ -42,10 +55,12 @@ const AddProduct = () => {
         setOfferPrice("");
         setFiles([]);
       } else {
-        toast.error("Kanishk:", data.message);
+        toast.error(data.message);
       }
     } catch (error) {
-      toast.error("Adarsh:", error.message);
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -165,8 +180,11 @@ const AddProduct = () => {
             />
           </div>
         </div>
-        <button className="px-8 py-2.5 bg-primary text-white font-medium rounded">
-          ADD
+        <button
+          disabled={loading}
+          className={`px-8 py-2.5 bg-primary text-white font-medium rounded ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+        >
+          {loading ? "ADDING..." : "ADD"}
         </button>
       </form>
     </div>
