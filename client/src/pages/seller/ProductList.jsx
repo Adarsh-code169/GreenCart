@@ -10,7 +10,6 @@ const ProductList = () => {
       const { data } = await axios.post("/api/product/stock", { id, inStock });
       if (data.success) {
         await fetchProducts();
-        console.log(products);
         toast.success(data.message);
       } else {
         toast.error(data.message);
