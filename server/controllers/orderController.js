@@ -43,6 +43,7 @@ export const placeOrderStripe = async (req, res) => {
         const userId = req.userId;
         const { origin } = req.headers;
         if (!address || items.length === 0) {
+            console.log("Stripe order failed validation. Address:", address, "Items:", items);
             return res.json({ success: false, message: "Invalid data" })
 
         }

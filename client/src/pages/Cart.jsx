@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
 import { assets } from "../assets/assets";
 import toast from "react-hot-toast";
@@ -16,6 +17,7 @@ const Cart = () => {
     axios,
     user,
     setCartItems,
+    setShowUserLogin,
   } = useAppContext();
 
   const [cartArray, setCartArray] = useState([]);
@@ -229,26 +231,33 @@ const Cart = () => {
               Change
             </button>
             {showAddress && (
-              <div className="absolute top-12 py-1 bg-white border border-gray-300 text-sm w-full">
+              <div className="absolute z-50 top-12 py-1 bg-white border border-gray-300 text-sm w-full shadow-md">
                 {addresses.map((address, index) => (
                   <p
                     onClick={() => {
                       setSelectedAddress(address);
                       setShowAddress(false);
                     }}
-                    className="text-gray-500 p-2 hover:bg-gray-100"
+                    className="text-gray-500 p-2 hover:bg-gray-100 cursor-pointer"
                     key={index}
                   >
                     {address.street}, {address.city}, {address.state},{" "}
                     {address.country}
                   </p>
                 ))}
-                <p
-                  onClick={() => navigate("/add-address")}
-                  className="text-primary text-center cursor-pointer p-2 hover:bg-primary/10"
+                <Link
+                  to="/add-address"
+                  onClick={(e) => {
+                    if (!user) {
+                      e.preventDefault();
+                      setShowUserLogin(true);
+                      toast.error("Please login first to add an address");
+                    }
+                  }}
+                  className="block text-primary text-center p-2 hover:bg-primary/10"
                 >
                   Add address
-                </p>
+                </Link>
               </div>
             )}
           </div>
