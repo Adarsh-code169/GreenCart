@@ -18,7 +18,6 @@ const port = process.env.PORT || 4000;
 await connectDB();
 await connectCloudinary();
 
-const allowedOrigins = ['http://localhost:5173', process.env.FRONTEND_URL];
 
 app.post(
   '/stripe',
@@ -29,11 +28,22 @@ app.post(
 
 app.use(express.json());
 app.use(cookieParser());
+
+const allowedOrigins = [
+  "http://localhost:3000",
+  process.env.FRONTEND_URL
+];
+
 app.use(cors({
-  origin: "*",
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed"));
+    }
+  },
   credentials: true
 }));
-
 
 app.get('/', (req, res) => res.send("API is Working"));
 
