@@ -3,7 +3,6 @@
 GreenCart is a full-stack MERN-based e-commerce platform designed to deliver a seamless online shopping experience. It allows users to browse products, manage carts, and place orders securely while providing sellers with dynamic product management capabilities.
 
 📌 Features
-
 🔐 Authentication & Authorization
 
 JWT-based secure login/signup
@@ -37,30 +36,29 @@ Order history
 Manage products & orders efficiently
 
 🧑‍💻 Tech Stack
-
-Frontend:
+Frontend
 
 React.js
 
-CSS - Tailwind 
+CSS - Tailwind
 
-Backend:
+Backend
 
 Node.js
 
 Express.js
 
-Database:
+Database
 
 MongoDB (MongoDB Atlas)
 
-Authentication:
+Authentication
 
 JSON Web Tokens (JWT)
 
 bcrypt
 
-Deployment:
+Deployment
 
 Vercel / Render
 
@@ -74,18 +72,14 @@ GreenCart/
 ├── controllers/   # Business logic
 └── config/        # DB & environment configs
 ⚙️ Installation & Setup
-1️⃣ Clone the repository
+1️⃣ Clone the Repository
 git clone https://github.com/Adarsh-code169/GreenCart.git
 cd GreenCart
-2️⃣ Install dependencies
-
-Frontend
-
+2️⃣ Install Dependencies
+📦 Frontend
 cd client
 npm install
-
-Backend
-
+⚙️ Backend
 cd server
 npm install
 3️⃣ Environment Variables
@@ -95,15 +89,11 @@ Create a .env file in the server folder and add:
 PORT=5000
 MONGO_URI=your_mongodb_connection
 JWT_SECRET=your_secret_key
-4️⃣ Run the project
-
-Backend
-
+4️⃣ Run the Project
+▶️ Start Backend
 cd server
 npm start
-
-Frontend
-
+💻 Start Frontend
 cd client
 npm run dev
 📡 API Endpoints
