@@ -29,21 +29,6 @@ app.post(
 app.use(express.json());
 app.use(cookieParser());
 
-const allowedOrigins = [
-  "http://localhost:3000",
-  process.env.FRONTEND_URL
-];
-
-app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("CORS not allowed"));
-    }
-  },
-  credentials: true
-}));
 
 app.get('/', (req, res) => res.send("API is Working"));
 
