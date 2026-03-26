@@ -31,7 +31,7 @@ app.use(cookieParser());
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://greencart-frontend-eta.vercel.app"
+  "https://green-cart-topaz-beta.vercel.app"
 ];
 
 app.use(cors({
