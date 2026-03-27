@@ -15,38 +15,48 @@ import { stripeWebhooks } from './controllers/orderController.js';
 const app = express();
 const port = process.env.PORT || 4000;
 
+// ✅ Connect DB & Cloudinary
 await connectDB();
 await connectCloudinary();
 
-
-app.post(
-  '/stripe',
-  express.raw({ type: 'application/json' }),
-  stripeWebhooks
-);
-
-
-app.use(express.json());
-app.use(cookieParser());
-
+// ✅ CORS CONFIG (MUST BE FIRST)
 const allowedOrigins = [
   "http://localhost:5173",
   "https://green-cart-topaz-beta.vercel.app"
 ];
 
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
+  origin: (origin, callback) => {
+    // allow requests with no origin (mobile apps, postman)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      return callback(new Error("CORS not allowed"));
     }
   },
-  credentials: true
+  credentials: true,
 }));
 
-app.get('/', (req, res) => res.send("API is Working"));
+// ✅ Handle preflight requests
+app.options('*', cors());
 
+// ✅ Stripe webhook (RAW body BEFORE json)
+app.post(
+  '/stripe',
+  express.raw({ type: 'application/json' }),
+  stripeWebhooks
+);
+
+// ✅ Middlewares
+app.use(express.json());
+app.use(cookieParser());
+
+// ✅ Test route
+app.get('/', (req, res) => res.send("API is Working 🚀"));
+
+// ✅ Routes
 app.use("/api/user", userRouter);
 app.use('/api/seller', sellerRouter);
 app.use('/api/product', productRouter);
@@ -54,6 +64,7 @@ app.use('/api/cart', cartRouter);
 app.use('/api/address', addressRouter);
 app.use('/api/order', orderRouter);
 
+// ✅ Server
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server running on port ${port}`);
 });
