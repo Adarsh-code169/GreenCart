@@ -22,7 +22,7 @@ await connectCloudinary();
 // ✅ CORS CONFIG
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://green-cart-topaz-beta.vercel.app"
+  "https://green-cart-8j1v.vercel.app"
 ];
 
 app.use(cors({
