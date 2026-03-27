@@ -19,19 +19,14 @@ const port = process.env.PORT || 4000;
 await connectDB();
 await connectCloudinary();
 
-// ✅ FINAL CORS FIX (IMPORTANT)
+// ✅ 🔥 FINAL CORS (NO MORE ISSUES)
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://green-cart-8j1v-e2rd6f74p-adarsh-code169s-projects.vercel.app"
-  ],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  origin: true,   // allow all origins dynamically
+  credentials: true
 }));
 
-// ✅ Handle preflight
-app.options('*', cors());
+// ❌ REMOVE THIS (not needed and can cause issues)
+// app.options('*', cors());
 
 // ✅ Stripe webhook (RAW body BEFORE json)
 app.post(
