@@ -38,7 +38,7 @@ app.use(cors({
   credentials: true,
 }));
 
-// ❌ REMOVE THIS (causing crash)
+// ❌ REMOVE THIS (Express v5 crash issue)
 // app.options('*', cors());
 
 // ✅ Stripe webhook (RAW body BEFORE json)
@@ -63,9 +63,9 @@ app.use('/api/cart', cartRouter);
 app.use('/api/address', addressRouter);
 app.use('/api/order', orderRouter);
 
-// ✅ Fallback route (optional but safe)
-app.get('/*', (req, res) => {
-  res.send("API route not found");
+// ✅ FINAL 404 HANDLER (Express v5 safe)
+app.use((req, res) => {
+  res.status(404).send("API route not found");
 });
 
 // ✅ Server
