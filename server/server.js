@@ -19,27 +19,19 @@ const port = process.env.PORT || 4000;
 await connectDB();
 await connectCloudinary();
 
-// ✅ CORS CONFIG
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://green-cart-8j1v.vercel.app"
-];
-
+// ✅ FINAL CORS FIX (IMPORTANT)
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error("CORS not allowed"));
-    }
-  },
+  origin: [
+    "http://localhost:5173",
+    "https://green-cart-8j1v-e2rd6f74p-adarsh-code169s-projects.vercel.app"
+  ],
   credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// ❌ REMOVE THIS (Express v5 crash issue)
-// app.options('*', cors());
+// ✅ Handle preflight
+app.options('*', cors());
 
 // ✅ Stripe webhook (RAW body BEFORE json)
 app.post(
@@ -63,7 +55,7 @@ app.use('/api/cart', cartRouter);
 app.use('/api/address', addressRouter);
 app.use('/api/order', orderRouter);
 
-// ✅ FINAL 404 HANDLER (Express v5 safe)
+// ✅ 404 handler
 app.use((req, res) => {
   res.status(404).send("API route not found");
 });
