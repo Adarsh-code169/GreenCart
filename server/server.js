@@ -19,7 +19,7 @@ const port = process.env.PORT || 4000;
 await connectDB();
 await connectCloudinary();
 
-// ✅ CORS CONFIG (MUST BE FIRST)
+// ✅ CORS CONFIG
 const allowedOrigins = [
   "http://localhost:5173",
   "https://green-cart-topaz-beta.vercel.app"
@@ -27,7 +27,6 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: (origin, callback) => {
-    // allow requests with no origin (mobile apps, postman)
     if (!origin) return callback(null, true);
 
     if (allowedOrigins.includes(origin)) {
@@ -39,8 +38,8 @@ app.use(cors({
   credentials: true,
 }));
 
-// ✅ Handle preflight requests
-app.options('*', cors());
+// ❌ REMOVE THIS (causing crash)
+// app.options('*', cors());
 
 // ✅ Stripe webhook (RAW body BEFORE json)
 app.post(
@@ -63,6 +62,11 @@ app.use('/api/product', productRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/address', addressRouter);
 app.use('/api/order', orderRouter);
+
+// ✅ Fallback route (optional but safe)
+app.get('/*', (req, res) => {
+  res.send("API route not found");
+});
 
 // ✅ Server
 app.listen(port, () => {
