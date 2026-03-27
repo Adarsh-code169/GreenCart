@@ -30,7 +30,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 const allowedOrigins = [
-  "http://localhost:3000",
+  "http://localhost:5173",
   "https://green-cart-topaz-beta.vercel.app"
 ];
 
@@ -39,7 +39,7 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error("CORS not allowed"));
+      callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true
