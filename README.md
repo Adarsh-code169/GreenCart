@@ -2,8 +2,6 @@
 
 **GreenCart** is a modern full-stack e-commerce web application designed to offer a seamless shopping and merchant management experience. Built entirely on the MERN stack (MongoDB, Express.js, React, Node.js), this platform supports distinct roles for buyers and sellers—allowing customers to browse, cart, and purchase products while sellers can list and manage their inventories.
 
-**Author**: Ashish Rajput
-
 ## Key Features
 
 - **User Authentication**: Secure Login & Registration using JSON Web Tokens (JWT) and BcryptJS.
@@ -46,7 +44,7 @@ Follow these steps to set up the project locally on your machine.
 
 1. **Clone the repository** (if you haven't already):
    ```bash
-   git clone <repository-url>
+   git clone 
    cd GreenCart_03/GreenCart
    ```
 
