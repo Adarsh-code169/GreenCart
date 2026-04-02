@@ -39,9 +39,6 @@ const AddProduct = () => {
         }
       });
 
-      console.log("formData: ", formData);
-      console.log("productData: ", productData);
-
       const { data } = await axios.post("/api/product/add", formData);
 
       if (data.success) {
