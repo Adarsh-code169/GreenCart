@@ -20,14 +20,6 @@ const AddProduct = () => {
       if (loading) return;
       setLoading(true);
 
-      // ✅ GET TOKEN
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        toast.error("Please login again");
-        setLoading(false);
-        return;
-      }
 
       const formData = new FormData();
 
@@ -41,24 +33,20 @@ const AddProduct = () => {
 
       formData.append("productData", JSON.stringify(productData));
 
-      // ✅ Append images
       files.forEach((file) => {
         if (file) {
           formData.append("images", file);
         }
       });
 
-      // ✅ SEND TOKEN IN HEADER
-      const { data } = await axios.post("/api/product/add", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      console.log("formData: ", formData);
+      console.log("productData: ", productData);
+
+      const { data } = await axios.post("/api/product/add", formData);
 
       if (data.success) {
         toast.success(data.message);
 
-        // Refresh product list dynamically
         fetchProducts();
 
         // reset fields
@@ -190,9 +178,8 @@ const AddProduct = () => {
 
         <button
           disabled={loading}
-          className={`px-8 py-2.5 bg-primary text-white font-medium rounded ${
-            loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-          }`}
+          className={`px-8 py-2.5 bg-primary text-white font-medium rounded ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+            }`}
         >
           {loading ? "ADDING..." : "ADD"}
         </button>
