@@ -3,6 +3,11 @@ import express from 'express';
 import cors from 'cors';
 import connectDB from './configs/db.js';
 import 'dotenv/config';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import userRouter from './routes/userRoute.js';
 import sellerRouter from './routes/sellerRoute.js';
 import connectCloudinary from './configs/cloudinary.js';
@@ -34,8 +39,8 @@ app.post(
 app.use(express.json());
 app.use(cookieParser());
 
-app.get('/', (req, res) => res.send("API is Working 🚀"));
 
+// API Routes
 app.use("/api/user", userRouter);
 app.use('/api/seller', sellerRouter);
 app.use('/api/product', productRouter);
@@ -43,9 +48,21 @@ app.use('/api/cart', cartRouter);
 app.use('/api/address', addressRouter);
 app.use('/api/order', orderRouter);
 
-app.use((req, res) => {
-  res.status(404).send("API route not found");
-});
+if (process.env.NODE_ENV === 'production') {
+  // Serve frontend build files
+  app.use(express.static(path.join(__dirname, '../client/dist')));
+
+  // Handle React routing, return all requests to React app
+  app.get('/{*splat}', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../client/dist/index.html'));
+  });
+} else {
+  app.get('/', (req, res) => res.send("API is Working 🚀"));
+
+  app.use((req, res) => {
+    res.status(404).send("API route not found");
+  });
+}
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
