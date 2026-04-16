@@ -12,23 +12,18 @@ const Categories = () => {
         Categories
       </p>
 
-      <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 mt-6 gap-6'>
-
-
+      <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 mt-6 gap-3 sm:gap-6'>
         {categories.map((category, index) => (
-          <div key={index} className='group cursor-pointer py-5 px-3 gap-2 rounded-lg flex flex-col justify-center items-center'
+          <div key={index} className='group cursor-pointer py-3 sm:py-5 px-2 sm:px-3 gap-1 sm:gap-2 rounded-lg flex flex-col justify-center items-center h-full transition-all'
             style={{ backgroundColor: category.bgColor }}
             onClick={() => {
               navigate(`/product-category/${category.path}`)
             }}
-
           >
-            <img src={category.image} alt={category.text} className='group-hover:scale-108 transition max-w-28' />
-            <p className='text-sm font-medium'>{category.text}</p>
+            <img src={category.image} alt={category.text} className='group-hover:scale-105 transition w-12 sm:w-20 md:w-24 lg:w-28' />
+            <p className='text-[10px] sm:text-xs md:text-sm font-medium text-center leading-tight'>{category.text}</p>
           </div>
-
         ))}
-
       </div>
     </div>
   )

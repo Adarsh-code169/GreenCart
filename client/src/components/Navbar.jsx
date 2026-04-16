@@ -45,7 +45,7 @@ const Navbar = () => {
   }, [searchQuery]);
 
   return (
-    <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
+    <nav className="flex items-center justify-between px-4 sm:px-10 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all z-50">
       {/* Logo */}
       <NavLink to="/" onClick={() => setOpen(false)}>
         <img className="h-9" src={assets.logo} alt="logo" />
@@ -151,25 +151,38 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Dropdown */}
-      {open && (
-        <div className="absolute top-[60px] left-0 w-full bg-white shadow-md py-4 flex flex-col items-start gap-2 px-5 text-sm md:hidden">
-          <NavLink to="/" onClick={() => setOpen(false)}>
-            Home
-          </NavLink>
-          <NavLink to="/products" onClick={() => setOpen(false)}>
-            All Product
-          </NavLink>
+      {/* Mobile Menu Overlay */}
+      <div className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none md:hidden'}`} onClick={() => setOpen(false)}></div>
 
+      {/* Mobile Dropdown Panel */}
+      <div className={`fixed top-0 bottom-0 right-0 w-64 bg-white z-50 shadow-xl transition-transform duration-300 ease-in-out transform ${open ? 'translate-x-0' : 'translate-x-full'} md:hidden`}>
+        <div className="flex justify-end p-5">
+          <button onClick={() => setOpen(false)} className="p-2">
+            <img src={assets.cross_icon} className="w-5" alt="close" />
+          </button>
+        </div>
+        
+        <div className="flex flex-col gap-1 px-5 text-gray-600">
+          <NavLink to="/" onClick={() => setOpen(false)} className="py-2 pl-4 border-b">Home</NavLink>
+          <NavLink to="/products" onClick={() => setOpen(false)} className="py-2 pl-4 border-b">All Product</NavLink>
           {user && (
-            <NavLink to="/my-orders" onClick={() => setOpen(false)}>
-              My Orders
-            </NavLink>
+            <NavLink to="/my-orders" onClick={() => setOpen(false)} className="py-2 pl-4 border-b">My Orders</NavLink>
           )}
-
-          <NavLink to="/" onClick={() => setOpen(false)}>
-            Contact
-          </NavLink>
+          <NavLink to="/" onClick={() => setOpen(false)} className="py-2 pl-4 border-b">Contact</NavLink>
+          
+          <button
+            onClick={() => {
+              setOpen(false);
+              if (isSeller) {
+                navigate("/seller");
+              } else {
+                setShowSellerLogin(true);
+              }
+            }}
+            className="py-2 pl-4 text-left border-b"
+          >
+            Seller Dashboard
+          </button>
 
           {!user ? (
             <button
@@ -177,20 +190,23 @@ const Navbar = () => {
                 setOpen(false);
                 setShowUserLogin(true);
               }}
-              className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm"
+              className="mt-4 px-6 py-2 bg-primary hover:bg-primary-dull text-white rounded-full text-center"
             >
               Login
             </button>
           ) : (
             <button
-              onClick={logout}
-              className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm"
+              onClick={() => {
+                setOpen(false);
+                logout();
+              }}
+              className="mt-4 px-6 py-2 bg-primary hover:bg-primary-dull text-white rounded-full text-center"
             >
               Logout
             </button>
           )}
         </div>
-      )}
+      </div>
     </nav>
   );
 };

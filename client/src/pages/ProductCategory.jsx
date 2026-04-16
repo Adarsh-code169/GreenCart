@@ -23,7 +23,7 @@ const ProductCategory = () => {
                 <div className='w-20 h-1 bg-primary rounded-full mt-2'></div>
             </div>
 
-            <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6'>
+            <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-6'>
                 {categoryProducts.map((item, index) => (
                     <ProductCard key={index} product={item} />
                 ))}

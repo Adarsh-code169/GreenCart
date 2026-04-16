@@ -64,15 +64,18 @@ const AddAddress = () => {
   }, []);
 
   return (
-    <div className="mt-16 pb-16">
-      <p className="text-2xl md:text-3xl text-gray-500">
-        Add Shipping <span className="font-semibold text-primary">Address</span>
-      </p>
+    <div className="mt-8 md:mt-16 pb-16">
+      <div className="flex flex-col items-center md:items-start">
+        <p className="text-2xl md:text-3xl text-gray-500 text-center md:text-left">
+          Add Shipping <span className="font-semibold text-primary">Address</span>
+        </p>
+        <div className="w-16 h-1 bg-primary rounded-full mt-2 md:hidden"></div>
+      </div>
 
-      <div className="flex flex-col-reverse md:flex-row justify-between mt-10">
-        <div className="flex-1 max-w-md">
-          <form onSubmit={onSubmitHandler} className="space-y-3 mt-6 text-sm">
-            <div className="grid grid-cols-2 gap-4">
+      <div className="flex flex-col-reverse lg:flex-row justify-between items-center lg:items-start mt-6 lg:mt-12 gap-12">
+        <div className="w-full max-w-lg bg-white p-6 sm:p-8 rounded-2xl border border-gray-100 shadow-sm">
+          <form onSubmit={onSubmitHandler} className="space-y-4 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <InputField
                 handleChange={handleChange}
                 address={address}
@@ -105,7 +108,7 @@ const AddAddress = () => {
               placeholder="Street"
             />
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <InputField
                 handleChange={handleChange}
                 address={address}
@@ -122,7 +125,7 @@ const AddAddress = () => {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <InputField
                 handleChange={handleChange}
                 address={address}
@@ -147,17 +150,19 @@ const AddAddress = () => {
               placeholder="Phone"
             />
 
-            <button className="w-full mt-6 bg-primary text-white py-3 hover:bg-primary-dull transition cursor-pointer uppercase">
-              Save address
+            <button className="w-full mt-4 bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary-dull transition-all shadow-md shadow-primary/20 cursor-pointer uppercase tracking-wider active:scale-[0.98]">
+              Save Address
             </button>
           </form>
         </div>
 
-        <img
-          className="md:mr-16 mb-16 md:mt-0"
-          src={assets.add_address_iamge}
-          alt="Add Address"
-        />
+        <div className="w-full max-w-md lg:max-w-sm shrink-0">
+          <img
+            className="w-full h-auto rounded-2xl"
+            src={assets.add_address_iamge}
+            alt="Add Address"
+          />
+        </div>
       </div>
     </div>
   );
