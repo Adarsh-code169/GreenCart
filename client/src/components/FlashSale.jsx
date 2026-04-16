@@ -3,7 +3,7 @@ import { useAppContext } from "../context/AppContext";
 import ProductCard from "./ProductCard";
 
 const FlashSale = () => {
-    const { products, currency } = useAppContext();
+    const { products, currency, navigate, addToCart } = useAppContext();
     const [timeLeft, setTimeLeft] = useState({
         hours: 12,
         minutes: 45,
@@ -55,21 +55,21 @@ const FlashSale = () => {
     const pad = (num) => String(num).padStart(2, "0");
 
     return (
-        <div className="mt-20 relative overflow-hidden rounded-3xl bg-slate-900 px-6 py-12 md:px-12 md:py-16 text-white shadow-2xl">
+        <div className="mt-16 md:mt-24 relative overflow-hidden rounded-[2.5rem] bg-emerald-50/50 border border-emerald-100 px-6 py-12 md:px-12 md:py-16">
             {/* Background Decor */}
-            <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-primary/20 blur-3xl"></div>
+            <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-primary/10 blur-3xl"></div>
             <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl"></div>
 
             <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-10">
                 <div className="flex-1 space-y-6 text-center lg:text-left">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-red-500/10 px-4 py-2 text-sm font-bold text-red-500 border border-red-500/20 animate-pulse">
-                        <span className="h-2 w-2 rounded-full bg-red-500"></span>
+                    <div className="inline-flex items-center gap-2 rounded-full bg-red-100 px-4 py-2 text-sm font-bold text-red-600 border border-red-200 animate-pulse">
+                        <span className="h-2 w-2 rounded-full bg-red-600"></span>
                         LIVE FLASH SALE
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">
-                        Midnight <span className="text-primary">Grocer</span> Deals
+                    <h2 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900">
+                        Lightning <span className="text-primary">Deals</span>
                     </h2>
-                    <p className="max-w-md mx-auto lg:mx-0 text-slate-400 text-lg">
+                    <p className="max-w-md mx-auto lg:mx-0 text-gray-500 text-lg">
                         Get up to 50% off on daily essentials. Grab them before the clock runs out!
                     </p>
 
@@ -81,10 +81,10 @@ const FlashSale = () => {
                             { label: "Sec", val: timeLeft.seconds },
                         ].map((item, i) => (
                             <div key={i} className="flex flex-col items-center">
-                                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-800/50 backdrop-blur-md border border-slate-700 text-3xl font-mono font-bold text-primary shadow-inner">
+                                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white border border-gray-200 text-3xl font-mono font-black text-primary shadow-sm">
                                     {pad(item.val)}
                                 </div>
-                                <span className="mt-2 text-xs uppercase tracking-widest text-slate-500 font-bold">
+                                <span className="mt-2 text-[10px] uppercase tracking-widest text-gray-400 font-bold">
                                     {item.label}
                                 </span>
                             </div>
@@ -92,37 +92,55 @@ const FlashSale = () => {
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-x-auto no-scrollbar pb-4 -mx-4 px-4 lg:mx-0 lg:px-0">
-                    <div className="flex gap-6 w-max">
-                        {flashSaleProducts.map((product) => (
-                            <div key={product._id} className="w-64 group relative transition-all duration-500 hover:-translate-y-2">
-                                <div className="absolute top-4 left-4 z-20 rounded-lg bg-red-600 px-2 py-1 text-xs font-bold text-white shadow-lg">
+                <div className="flex-1 overflow-hidden -mx-4 lg:mx-0 relative">
+                    {/* Fade edges */}
+                    <div className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-r from-emerald-50/50 to-transparent"></div>
+                    <div className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-l from-emerald-50/50 to-transparent"></div>
+
+                    {/* Marquee Track */}
+                    <div className="flex gap-6 pb-4 flash-marquee">
+                        {/* Render twice for seamless loop */}
+                        {[...flashSaleProducts, ...flashSaleProducts].map((product, idx) => (
+                            <div 
+                                key={`${product._id}-${idx}`} 
+                                onClick={() => { navigate(`/products/${product.category.toLowerCase()}/${product._id}`); scrollTo(0, 0); }}
+                                className="w-56 flex-shrink-0 group relative transition-all duration-500 hover:-translate-y-2 hover:[animation-play-state:paused] cursor-pointer"
+                            >
+                                <div className="absolute top-4 left-4 z-20 rounded-lg bg-red-500 px-2.5 py-1 text-xs font-black text-white shadow-md">
                                     -{Math.round(((product.price - product.offerPrice) / product.price) * 100)}%
                                 </div>
-                                <div className="bg-slate-800/40 rounded-2xl p-4 border border-slate-700/50 backdrop-blur-sm group-hover:border-primary/50 group-hover:bg-slate-800/60 transition-colors">
-                                    <img 
-                                        src={product.image[0]} 
-                                        alt={product.name} 
-                                        className="h-40 w-full object-contain mb-4 transition-transform duration-500 group-hover:scale-110"
-                                    />
-                                    <h3 className="font-bold text-slate-200 line-clamp-1">{product.name}</h3>
-                                    <div className="flex items-center gap-2 mt-2">
-                                        <span className="text-xl font-bold text-primary">{currency}{product.offerPrice}</span>
-                                        <span className="text-sm text-slate-500 line-through">{currency}{product.price}</span>
-                                    </div>
-                                    
-                                    {/* Stock Progress Bar */}
-                                    <div className="mt-4 space-y-1.5">
-                                        <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                                            <span>Selling Fast</span>
-                                            <span className="text-red-400">85% Sold</span>
+                                <div className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm group-hover:border-primary/30 group-hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.08)] transition-all duration-300 h-full flex flex-col justify-between">
+                                    <div>
+                                        <div className="bg-gray-50 rounded-2xl p-4 mb-4 flex items-center justify-center h-36">
+                                            <img
+                                                src={product.image[0]}
+                                                alt={product.name}
+                                                className="max-h-full w-full object-contain transition-transform duration-500 group-hover:scale-110"
+                                            />
                                         </div>
-                                        <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-700">
-                                            <div className="h-full bg-gradient-to-r from-primary to-emerald-400 transition-all duration-1000" style={{ width: '85%' }}></div>
+                                        <p className="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-1">{product.category}</p>
+                                        <h3 className="font-bold text-gray-800 line-clamp-1 mb-2 group-hover:text-primary transition-colors">{product.name}</h3>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xl font-black text-primary">{currency}{product.offerPrice}</span>
+                                            <span className="text-xs font-bold text-gray-400 line-through">{currency}{product.price}</span>
+                                        </div>
+
+                                        {/* Stock Progress Bar */}
+                                        <div className="mt-4 space-y-1.5">
+                                            <div className="flex justify-between text-[10px] font-black uppercase tracking-wider text-gray-400">
+                                                <span>Selling Fast</span>
+                                                <span className="text-red-500">85% Sold</span>
+                                            </div>
+                                            <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+                                                <div className="h-full bg-gradient-to-r from-red-400 to-red-500" style={{ width: '85%' }}></div>
+                                            </div>
                                         </div>
                                     </div>
-                                    
-                                    <button className="mt-5 w-full rounded-xl bg-white py-2 text-sm font-bold text-slate-900 transition-all hover:bg-primary hover:text-white">
+
+                                    <button 
+                                        onClick={(e) => { e.stopPropagation(); addToCart(product._id); }}
+                                        className="mt-5 w-full rounded-xl bg-primary/10 py-2.5 text-xs font-bold text-primary transition-all hover:bg-primary hover:text-white active:scale-95"
+                                    >
                                         Grab Now
                                     </button>
                                 </div>
@@ -133,8 +151,17 @@ const FlashSale = () => {
             </div>
 
             <style dangerouslySetInnerHTML={{ __html: `
-                .no-scrollbar::-webkit-scrollbar { display: none; }
-                .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+                @keyframes flash-scroll {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(-50%); }
+                }
+                .flash-marquee {
+                    animation: flash-scroll 25s linear infinite;
+                    width: max-content;
+                }
+                .flash-marquee:hover {
+                    animation-play-state: paused;
+                }
             `}} />
         </div>
     );
