@@ -1,0 +1,11 @@
+services:
+  greencart:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: greencart-app
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./server/.env  
+    restart: unless-stopped
