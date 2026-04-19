@@ -23,8 +23,5 @@ jobs:
           client/package-lock.json
           server/package-lock.json
 
-    - name: Make Build Script Executable
-      run: chmod +x ./scripts/build.sh
-
-    - name: Run Build Script
-      run: ./scripts/build.sh
+    - name: Run Root Build
+      run: npm run build
