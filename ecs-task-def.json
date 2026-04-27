@@ -4,25 +4,18 @@
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "256",
   "memory": "512",
-  "executionRoleArn": "arn:aws:iam::${AWS_ACCOUNT_ID}:role/greencart-task-execution",
+  "executionRoleArn": "arn:aws:iam::654032995211:role/LabRole",
   "containerDefinitions": [
     {
       "name": "greencart-frontend",
-      "image": "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/greencart-frontend:${IMAGE_TAG}",
+      "image": "654032995211.dkr.ecr.us-east-1.amazonaws.com/greencart-frontend:latest",
       "portMappings": [
         {
           "containerPort": 80,
           "protocol": "tcp"
         }
       ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/greencart",
-          "awslogs-region": "${AWS_REGION}",
-          "awslogs-stream-prefix": "ecs"
-        }
-      }
+      "essential": true
     }
   ]
 }
