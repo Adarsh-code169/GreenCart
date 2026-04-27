@@ -1,0 +1,94 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Greencart Front-end ECS Stack (ECR -> ECS)
+
+Parameters:
+  RepositoryUri:
+    Type: String
+    Description: Full ECR repository URI (e.g. 123456789012.dkr.ecr.us-east-1.amazonaws.com/greencart-frontend)
+
+Resources:
+  # -------------------------------------------------
+  # 1. ECS Cluster
+  # -------------------------------------------------
+  GreencartCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: greencart-cluster
+
+  # -------------------------------------------------
+  # 2. IAM Role for the task execution (allows pulling from ECR and pushing logs)
+  # -------------------------------------------------
+  GreencartTaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: greencart-task-execution
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+
+  # -------------------------------------------------
+  # 3. Task Definition
+  # -------------------------------------------------
+  GreencartTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: greencart-task
+      Cpu: '256'
+      Memory: '512'
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      ExecutionRoleArn: !GetAtt GreencartTaskExecutionRole.Arn
+      ContainerDefinitions:
+        - Name: greencart-frontend
+          Image: !Sub '${RepositoryUri}:latest'
+          PortMappings:
+            - ContainerPort: 80
+              Protocol: tcp
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: /ecs/greencart
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+
+  # -------------------------------------------------
+  # 4. Security Group for the service (allow HTTP)
+  # -------------------------------------------------
+  GreencartServiceSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow inbound HTTP for Greencart
+      VpcId: !ImportValue VpcId # Ensure you have a VPC exported or hardcode your VPC ID here
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  # -------------------------------------------------
+  # 5. ECS Service
+  # -------------------------------------------------
+  GreencartService:
+    Type: AWS::ECS::Service
+    DependsOn: GreencartTaskDefinition
+    Properties:
+      ServiceName: greencart-service
+      Cluster: !Ref GreencartCluster
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups:
+            - !Ref GreencartServiceSG
+          Subnets:
+            - !ImportValue PublicSubnetA # Ensure exported or hardcode Subnet IDs
+            - !ImportValue PublicSubnetB
+      TaskDefinition: !Ref GreencartTaskDefinition
